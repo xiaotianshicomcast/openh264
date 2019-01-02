@@ -876,6 +876,8 @@ int32_t ParseSliceHeaderSyntaxs (PWelsDecoderContext pCtx, PBitStringAux pBs, co
 
   pSliceHeadExt = &kpCurNal->sNalData.sVclNal.sSliceHeaderExt;
 
+  pSliceHead->bIsRefPic = false;
+
   if (pSliceHeadExt) {
     SRefBasePicMarking sBaseMarking;
     const bool kbStoreRefBaseFlag = pSliceHeadExt->bStoreRefBasePicFlag;
@@ -2476,6 +2478,7 @@ int32_t DecodeCurrentAccessUnit (PWelsDecoderContext pCtx, uint8_t** ppDst, SBuf
       dq_cur->pBitStringAux = &pNalCur->sNalData.sVclNal.sSliceBitsRead;
 
       uiNalRefIdc = pNalCur->sNalHeaderExt.sNalUnitHeader.uiNalRefIdc;
+      pSh->bIsRefPic = uiNalRefIdc > 0;
 
       iPpsId = pSh->iPpsId;
 
