@@ -947,8 +947,8 @@ int32_t ParseInterBMotionInfoCabac (PWelsDecoderContext pCtx, PWelsNeighAvail pN
           }
           Update8x8RefIdx (pCurDqLayer, iIdx8, LIST_0, iRef[LIST_0]);
           Update8x8RefIdx (pCurDqLayer, iIdx8, LIST_1, iRef[LIST_1]);
-          UpdateP8x8RefCacheIdxCabac (pCurDqLayer, pRefIndex, iIdx8, LIST_0, iRef[LIST_0]);
-          UpdateP8x8RefCacheIdxCabac (pCurDqLayer, pRefIndex, iIdx8, LIST_1, iRef[LIST_1]);
+          UpdateP8x8RefCacheIdxCabac (pRefIndex, iIdx8, LIST_0, iRef[LIST_0]);
+          UpdateP8x8RefCacheIdxCabac (pRefIndex, iIdx8, LIST_1, iRef[LIST_1]);
           FillTemporalDirect8x8Mv (pCurDqLayer, iIdx8, pSubPartCount[i], pPartW[i], directSubMbType, iRef, mvColoc, pMotionVector,
                                    pMvdCache);
         }
@@ -999,14 +999,14 @@ int32_t ParseInterBMotionInfoCabac (PWelsDecoderContext pCtx, PWelsNeighAvail pN
           continue;
 
         int8_t iref = ref_idx_list[listIdx][i];
-        UpdateP8x8RefCacheIdxCabac (pCurDqLayer, pRefIndex, iIdx8, listIdx, iref);
+        UpdateP8x8RefCacheIdxCabac (pRefIndex, iIdx8, listIdx, iref);
 
         if (IS_DIRECT (subMbType))
           continue;
 
         bool is_dir = IS_DIR (subMbType, 0, listIdx) > 0;
         int8_t iPartCount = pSubPartCount[i];
-        int16_t iPartIdx, iBlockW = pPartW[i];
+        int16_t iBlockW = pPartW[i];
         uint8_t iScan4Idx, iCacheIdx;
         for (int32_t j = 0; j < iPartCount; j++) {
           iPartIdx = (i << 2) + j * iBlockW;
@@ -1540,7 +1540,7 @@ int32_t ParseIPCMInfoCabac (PWelsDecoderContext pCtx) {
   WELS_READ_VERIFY (InitCabacDecEngineFromBS (pCabacDecEngine, pBsAux));
   return ERR_NONE;
 }
-void    UpdateP8x8RefCacheIdxCabac (PDqLayer& pCurDqLayer, int8_t pRefIndex[LIST_A][30], const int16_t& iPartIdx,
+void    UpdateP8x8RefCacheIdxCabac (int8_t pRefIndex[LIST_A][30], const int16_t& iPartIdx,
                                     const int32_t& listIdx, const int8_t& iRef) {
   const uint8_t uiCacheIdx = g_kuiCache30ScanIdx[iPartIdx];
   pRefIndex[listIdx][uiCacheIdx] = pRefIndex[listIdx][uiCacheIdx + 1] = pRefIndex[listIdx][uiCacheIdx + 6] =

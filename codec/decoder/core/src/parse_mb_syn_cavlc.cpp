@@ -1368,7 +1368,7 @@ int32_t ParseInterBInfo (PWelsDecoderContext pCtx, int16_t iMvArray[LIST_A][30][
       for (int32_t listIdx = LIST_0; listIdx < LIST_A; ++listIdx) {
         if (IS_DIR (mbType, 0, listIdx)) {
           WELS_READ_VERIFY (BsGetOneBit (pBs, &uiCode)); //motion_prediction_flag_l0/l1[ mbPartIdx ]
-          iMotionPredFlag[listIdx][0] = uiCode > 0;
+          iMotionPredFlag[listIdx][0] = uiCode;
         }
       }
     }
@@ -1416,7 +1416,7 @@ int32_t ParseInterBInfo (PWelsDecoderContext pCtx, int16_t iMvArray[LIST_A][30][
         for (int32_t i = 0; i < 2; ++i) {
           if (IS_DIR (mbType, i, listIdx)) {
             WELS_READ_VERIFY (BsGetOneBit (pBs, &uiCode)); //motion_prediction_flag_l0/l1[ mbPartIdx ]
-            iMotionPredFlag[listIdx][i] = uiCode > 0;
+            iMotionPredFlag[listIdx][i] = uiCode;
           }
         }
       }
@@ -1473,7 +1473,7 @@ int32_t ParseInterBInfo (PWelsDecoderContext pCtx, int16_t iMvArray[LIST_A][30][
         for (int32_t i = 0; i < 2; ++i) {
           if (IS_DIR (mbType, i, listIdx)) {
             WELS_READ_VERIFY (BsGetOneBit (pBs, &uiCode)); //motion_prediction_flag_l0/l1[ mbPartIdx ]
-            iMotionPredFlag[listIdx][i] = uiCode > 0;
+            iMotionPredFlag[listIdx][i] = uiCode;
           }
         }
       }
@@ -1579,7 +1579,7 @@ int32_t ParseInterBInfo (PWelsDecoderContext pCtx, int16_t iMvArray[LIST_A][30][
           bool is_dir = IS_DIR (pCurDqLayer->pSubMbType[iMbXy][i], 0, listIdx) > 0;
           if (is_dir) {
             WELS_READ_VERIFY (BsGetOneBit (pBs, &uiCode)); //motion_prediction_flag_l0[ mbPartIdx ]
-            iMotionPredFlag[listIdx][i] = uiCode > 0;
+            iMotionPredFlag[listIdx][i] = uiCode;
           }
         }
       }
