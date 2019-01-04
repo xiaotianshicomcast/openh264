@@ -127,13 +127,16 @@ class CWelsDecoder : public ISVCDecoder {
   int32_t                 m_iLastGOPRemainPicts;
   int32_t                 m_LastWrittenPOC;
   int32_t                 m_iLargestBufferedPicIndex;
+  bool                    m_bUseDecodeFrameNoDelay;
 
   int32_t InitDecoder (const SDecodingParam* pParam);
   void UninitDecoder (void);
   int32_t ResetDecoder();
 
   void OutputStatisticsLog (SDecoderStatistics& sDecoderStatistics);
-  DECODING_STATE ReorderPicturesInDisplay (unsigned char** ppDst, SBufferInfo* pDstInfo);
+  DECODING_STATE InternalDecodeFrame2 (unsigned char** ppDst, SBufferInfo* pDstInfo);
+  DECODING_STATE ReorderPicturesInDisplay (const unsigned char* kpSrc, const int kiSrcLen, unsigned char** ppDst,
+      SBufferInfo* pDstInfo);
 
 #ifdef OUTPUT_BIT_STREAM
   WelsFileHandle* m_pFBS;
