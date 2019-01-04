@@ -639,7 +639,8 @@ DECODING_STATE CWelsDecoder::DecodeFrame2 (const unsigned char* kpSrc,
     OutputStatisticsLog (m_pDecContext->sDecoderStatistics);
 
 #ifdef  _PICTURE_REORDERING_
-    ReorderPicturesInDisplay (kpSrc, kiSrcLen, ppDst, pDstInfo);
+    if (m_pDecContext->pSps && m_pDecContext->pSps->uiProfileIdc != 66)
+      ReorderPicturesInDisplay (kpSrc, kiSrcLen, ppDst, pDstInfo);
 #endif
 
     return (DECODING_STATE)m_pDecContext->iErrorCode;
@@ -660,7 +661,8 @@ DECODING_STATE CWelsDecoder::DecodeFrame2 (const unsigned char* kpSrc,
   m_pDecContext->dDecTime += (iEnd - iStart) / 1e3;
 
 #ifdef  _PICTURE_REORDERING_
-  ReorderPicturesInDisplay (kpSrc, kiSrcLen, ppDst, pDstInfo);
+  if (m_pDecContext->pSps && m_pDecContext->pSps->uiProfileIdc != 66)
+    ReorderPicturesInDisplay (kpSrc, kiSrcLen, ppDst, pDstInfo);
 #endif
   return dsErrorFree;
 }
@@ -748,14 +750,9 @@ DECODING_STATE CWelsDecoder::ReorderPicturesInDisplay (const unsigned char* kpSr
     unsigned char** ppDst, SBufferInfo* pDstInfo) {
   DECODING_STATE iRet = dsErrorFree;
   if (!m_bUseDecodeFrameNoDelay && kpSrc != NULL) {
-    if (m_pDecContext->pSps && m_pDecContext->pSps->uiProfileIdc != 66) {
-      if (m_pDecContext->pSliceHeader && m_pDecContext->pSliceHeader->eSliceType == B_SLICE && !m_pDecContext->bUsedAsRef
-          && !pDstInfo->iBufferStatus) {
-        iRet = InternalDecodeFrame2 (ppDst, pDstInfo);
-      }
-    }
+    iRet = InternalDecodeFrame2 (ppDst, pDstInfo);
   }
-  if (pDstInfo->iBufferStatus == 1 && m_pDecContext->pSps->uiProfileIdc != 66) {
+  if (pDstInfo->iBufferStatus == 1) {
     //Non-reference B_FRAME (disposable) must be released and must not be buffered because its buffer could be overwritten by next reference picture.
     if (m_pDecContext->pSliceHeader->eSliceType == B_SLICE && !m_pDecContext->bUsedAsRef) {
       if (m_pDecContext->pSliceHeader->iPicOrderCntLsb - m_LastWrittenPOC <= 2) {
